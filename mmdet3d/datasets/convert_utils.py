@@ -397,7 +397,7 @@ def generate_record(ann_rec: dict, x1: float, y1: float, x2: float, y2: float,
             - bbox_3d_isvalid (bool): whether the box is valid
     """
 
-    if dataset == 'nuscenes':
+    if dataset == 'nuscenes' or dataset == 'kitti-nus': #TODO: be sure -> necessary?
         cat_name = ann_rec['category_name']
         if cat_name not in NuScenesNameMapping:
             return None
