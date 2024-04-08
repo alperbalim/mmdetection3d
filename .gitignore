@@ -119,6 +119,7 @@ exps/
 *~
 mmdet3d/.mim
 
+/mmdet3d_custom
 # Pytorch
 *.pth
 
