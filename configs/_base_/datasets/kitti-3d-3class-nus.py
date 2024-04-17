@@ -2,7 +2,7 @@
 dataset_type = 'KittiDatasetNus'
 data_root = 'data/kitti_nus/'
 class_names = ['pedestrian', 'bicycle', 'car']
-point_cloud_range = [0, -40, -3, 70.4, 40, 1]
+point_cloud_range = [-50, -50, -5, 50, 50, 3]
 input_modality = dict(use_lidar=True, use_camera=False)
 metainfo = dict(classes=class_names)
 
@@ -47,17 +47,13 @@ train_pipeline = [
         backend_args=backend_args),
     dict(type='LoadAnnotations3D', with_bbox_3d=True, with_label_3d=True),
     dict(type='ObjectSample', db_sampler=db_sampler),
-    dict(
-        type='ObjectNoise',
-        num_try=100,
-        translation_std=[1.0, 1.0, 0.5],
-        global_rot_range=[0.0, 0.0],
-        rot_range=[-0.78539816, 0.78539816]),
     dict(type='RandomFlip3D', flip_ratio_bev_horizontal=0.5),
     dict(
         type='GlobalRotScaleTrans',
-        rot_range=[-0.78539816, 0.78539816],
-        scale_ratio_range=[0.95, 1.05]),
+        rot_range=[-0.3925, 0.3925],
+        scale_ratio_range=[0.95, 1.05],
+        translation_std=[0, 0, 0]),
+
     dict(type='PointsRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='ObjectRangeFilter', point_cloud_range=point_cloud_range),
     dict(type='PointShuffle'),
@@ -72,6 +68,7 @@ test_pipeline = [
         load_dim=4,
         use_dim=4,
         backend_args=backend_args),
+
     dict(
         type='MultiScaleFlipAug3D',
         img_scale=(1333, 800),
@@ -97,6 +94,11 @@ eval_pipeline = [
         coord_type='LIDAR',
         load_dim=4,
         use_dim=4,
+        backend_args=backend_args),
+    dict(
+        type='LoadPointsFromMultiSweeps',
+        sweeps_num=10,
+        test_mode=True,
         backend_args=backend_args),
     dict(type='Pack3DDetInputs', keys=['points'])
 ]
